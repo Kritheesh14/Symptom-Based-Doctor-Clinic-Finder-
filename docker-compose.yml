@@ -1,0 +1,19 @@
+# Local development services:  docker compose up -d
+# PostgreSQL 16 on :5432 and Qdrant on :6333 (dashboard: http://localhost:6333/dashboard).
+# The default password below is for local development only: override with POSTGRES_PASSWORD in your shell or a .env file.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: symptom
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-symptom_dev}
+      POSTGRES_DB: symptom_finder
+    ports: ["5433:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  qdrant:
+    image: qdrant/qdrant
+    ports: ["6333:6333"]
+    volumes: ["qdrant_data:/qdrant/storage"]
+volumes:
+  pgdata:
+  qdrant_data:

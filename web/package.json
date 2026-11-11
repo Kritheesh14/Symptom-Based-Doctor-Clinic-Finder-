@@ -1,0 +1,36 @@
+{
+  "name": "symptom-finder-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "qdrant:setup": "tsx --env-file=.env.local scripts/setup-qdrant.ts",
+    "qdrant:ingest": "tsx --env-file=.env.local scripts/ingest-corpus.ts",
+    "qdrant:eval": "tsx --env-file=.env.local scripts/eval-retrieval.ts",
+    "validate:corpus": "tsx scripts/validate-corpus.ts"
+  },
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.15.0",
+    "@xenova/transformers": "^2.17.2",
+    "bcryptjs": "^3.0.2",
+    "jose": "^6.0.0",
+    "next": "^16.0.0",
+    "pg": "^8.13.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
