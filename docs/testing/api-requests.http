@@ -1,0 +1,68 @@
+### REST Client (VS Code) / IntelliJ HTTP requests.  Start the app first (npm run dev).
+@base = http://localhost:3000
+
+### 1. patient login (copy the Set-Cookie value into the cookie variables below, or use the cookie jar of your client)
+# @name patientLogin
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "aarav.sharma@example.com", "password": "Patient@123", "role": "patient" }
+
+### 2. admin login
+# @name adminLogin
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "admin@symptomfinder.example", "password": "Admin@123", "role": "admin" }
+
+### 3. FAILURES: wrong password and unknown e-mail return the same 401 message
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "aarav.sharma@example.com", "password": "nope", "role": "patient" }
+
+###
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "nobody@example.com", "password": "nope", "role": "patient" }
+
+### 4. no cookie -> 401
+GET {{base}}/api/appointments
+
+### 5. patient cookie on an admin route -> 403
+GET {{base}}/api/admin/stats
+Cookie: session={{patient_token}}
+
+### 6. SQL injection attempts are plain data
+GET {{base}}/api/doctors?q=%27%20OR%201%3D1%20--
+Cookie: session={{patient_token}}
+
+### 7. symptom check (needs Qdrant)
+POST {{base}}/api/symptom-check
+Content-Type: application/json
+Cookie: session={{patient_token}}
+
+{ "text": "my chest feels tight when I climb stairs" }
+
+### 8. doctor search (full-text search function)
+GET {{base}}/api/doctors?q=ravi%20cardio
+Cookie: session={{patient_token}}
+
+### 9. slots and booking
+GET {{base}}/api/doctors/3/slots?date=2026-12-01
+Cookie: session={{patient_token}}
+
+###
+POST {{base}}/api/appointments
+Content-Type: application/json
+Cookie: session={{patient_token}}
+
+{ "doctorId": 3, "clinicId": 2, "slot": "2026-12-01 10:00" }
+
+### 10. admin: complete + prescribe (appointmentId from the booking response)
+POST {{base}}/api/prescriptions
+Content-Type: application/json
+Cookie: session={{admin_token}}
+
+{ "appointmentId": 76, "medicineDetails": "Cetirizine 10 mg once daily for 5 days", "notes": "Review in a week" }
