@@ -1,10 +1,10 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
 import { Spinner } from './display';
- 
+
 const base = 'w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-muted/70 focus:border-brand disabled:opacity-60';
- 
+
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'danger' | 'ghost'; loading?: boolean };
- 
+
 /** Button: variant picks colour; `loading` shows a spinner and disables the button. */
 export function Button({ variant = 'primary', loading, className = '', children, disabled, ...rest }: ButtonProps) {
   const styles = {
@@ -24,7 +24,7 @@ export function Button({ variant = 'primary', loading, className = '', children,
     </button>
   );
 }
- 
+
 export function Field({ label, htmlFor, hint, error, children }: { label: string; htmlFor: string; hint?: string; error?: string | null; children: ReactNode }) {
   return (
     <div className="space-y-1">
@@ -35,15 +35,15 @@ export function Field({ label, htmlFor, hint, error, children }: { label: string
     </div>
   );
 }
- 
+
 export function Input({ className = '', ...rest }: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...rest} className={`${base} ${className}`} />;
 }
- 
+
 export function Textarea({ className = '', ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea {...rest} className={`${base} ${className}`} />;
 }
- 
+
 export function Select({ className = '', children, ...rest }: SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...rest} className={`${base} ${className}`}>{children}</select>;
 }

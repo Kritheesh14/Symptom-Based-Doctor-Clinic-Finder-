@@ -1,5 +1,5 @@
 import type { NextConfig } from 'next';
- 
+
 const nextConfig: NextConfig = {
   // The embedding model runs inside the Node server process; keep native packages out of the bundle.
   serverExternalPackages: ['@xenova/transformers', 'onnxruntime-node', 'sharp'],
@@ -17,5 +17,5 @@ const nextConfig: NextConfig = {
     ];
   },
 };
- 
+
 export default nextConfig;

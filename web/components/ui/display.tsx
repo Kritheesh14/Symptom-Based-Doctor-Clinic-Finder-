@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
- 
+
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return <section className={`rounded-lg border border-line bg-surface p-5 ${className}`}>{children}</section>;
 }
- 
+
 type Tone = 'neutral' | 'ok' | 'warn' | 'danger' | 'brand';
 const TONES: Record<Tone, string> = {
   neutral: 'bg-paper text-muted border-line',
@@ -12,21 +12,21 @@ const TONES: Record<Tone, string> = {
   danger: 'bg-danger-soft text-danger border-danger/30',
   brand: 'bg-brand-soft text-brand-dark border-brand/30',
 };
- 
+
 export function Badge({ tone = 'neutral', children }: { tone?: Tone; children: ReactNode }) {
   return <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium ${TONES[tone]}`}>{children}</span>;
 }
- 
+
 /** Status colours for appointment status and doctor availability. */
 export function StatusBadge({ status }: { status: string }) {
   const tone: Tone = ({ scheduled: 'brand', completed: 'ok', cancelled: 'neutral', no_show: 'danger', available: 'ok', on_leave: 'warn', unavailable: 'danger' } as Record<string, Tone>)[status] ?? 'neutral';
   return <Badge tone={tone}>{status.replace('_', ' ')}</Badge>;
 }
- 
+
 export function Alert({ tone = 'danger', children }: { tone?: 'danger' | 'warn' | 'ok' | 'brand'; children: ReactNode }) {
   return <div role={tone === 'danger' ? 'alert' : 'status'} className={`rounded-md border px-4 py-3 text-sm ${TONES[tone]}`}>{children}</div>;
 }
- 
+
 export function Spinner({ size = 20 }: { size?: number }) {
   return (
     <svg role="status" aria-label="Loading" width={size} height={size} viewBox="0 0 24 24" className="animate-spin text-current">
@@ -35,11 +35,11 @@ export function Spinner({ size = 20 }: { size?: number }) {
     </svg>
   );
 }
- 
+
 export function Loading({ label = 'Loading…' }: { label?: string }) {
   return <div className="flex items-center gap-2 py-8 text-sm text-muted"><Spinner /> {label}</div>;
 }
- 
+
 export function EmptyState({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <div className="rounded-lg border border-dashed border-line bg-surface px-6 py-10 text-center">
@@ -48,7 +48,7 @@ export function EmptyState({ title, children }: { title: string; children?: Reac
     </div>
   );
 }
- 
+
 /** Scroll-safe table shell. Use <thead>/<tbody> with the exported th/td class names. */
 export function Table({ children }: { children: ReactNode }) {
   return (
@@ -59,7 +59,7 @@ export function Table({ children }: { children: ReactNode }) {
 }
 export const th = 'border-b border-line bg-paper px-3 py-2 font-medium text-muted whitespace-nowrap';
 export const td = 'border-b border-line/60 px-3 py-2 align-top';
- 
+
 /** Plain CSS horizontal bars (no chart library). */
 export function BarList({ items, empty }: { items: { label: string; value: number }[]; empty: string }) {
   if (items.length === 0) return <p className="text-sm text-muted">{empty}</p>;
@@ -78,4 +78,3 @@ export function BarList({ items, empty }: { items: { label: string; value: numbe
     </ul>
   );
 }
- 

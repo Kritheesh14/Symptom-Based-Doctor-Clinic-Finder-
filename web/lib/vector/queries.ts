@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { CASES, QUERIES, qdrant } from './client';
 import type { Recommendation } from './recommend';
- 
+
 /** Store what the patient typed (re-using the vector computed for the recommendation). Returns the point id. */
 export async function logPatientQuery(args: { patientId: number; text: string; rec: Recommendation }): Promise<string> {
   const id = randomUUID();
@@ -23,12 +23,12 @@ export async function logPatientQuery(args: { patientId: number; text: string; r
   });
   return id;
 }
- 
+
 /** Remember which appointment a logged query led to. */
 export async function linkQueryToAppointment(queryId: string, appointmentId: number): Promise<void> {
   await qdrant().setPayload(QUERIES, { payload: { appointment_id: appointmentId }, points: [queryId], wait: true });
 }
- 
+
 /**
  * Feedback loop: when an appointment is completed, the symptom text the patient typed becomes a new
  * labelled case in `symptom_cases`, labelled with the speciality of the doctor who actually saw them.
@@ -49,7 +49,7 @@ export async function promoteToConfirmedCase(
   const vector = point.vector as number[] | undefined;
   if (!Array.isArray(vector)) return false;
   const payload = (point.payload ?? {}) as Record<string, unknown>;
- 
+
   await qdrant().upsert(CASES, {
     wait: true,
     points: [{
@@ -67,7 +67,7 @@ export async function promoteToConfirmedCase(
   });
   return true;
 }
- 
+
 /** Number of patient queries per predicted speciality (admin "symptom demand" chart). */
 export async function specialityDemand(
   specialities: { speciality_id: number; speciality_name: string }[],
@@ -83,7 +83,7 @@ export async function specialityDemand(
   );
   return rows.sort((a, b) => b.count - a.count);
 }
- 
+
 export async function countCases(source?: 'seed' | 'confirmed'): Promise<number> {
   const r = await qdrant().count(CASES, {
     filter: source ? { must: [{ key: 'source', match: { value: source } }] } : undefined,
@@ -91,4 +91,3 @@ export async function countCases(source?: 'seed' | 'confirmed'): Promise<number>
   });
   return r.count;
 }
- 

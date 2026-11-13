@@ -2,18 +2,18 @@
 import { useState } from 'react';
 import { Alert, Button, Card, ConfirmDialog, EmptyState, Field, Input, Loading, Select, StatusBadge, Table, td, th } from '@/components/ui';
 import { api, formatDate, todayLocal, useApi } from '@/lib/client';
- 
+
 type Doctor = { doctor_id: number; name: string; years_experience: number; availability_status: string; speciality_id: number; speciality_name: string; clinics: { clinic_id: number; clinic_name: string; since_date: string }[] };
 type Spec = { speciality_id: number; speciality_name: string };
 type Clinic = { clinic_id: number; clinic_name: string };
- 
+
 const EMPTY = { name: '', yearsExperience: '0', availabilityStatus: 'available', specialityId: '' };
- 
+
 export default function AdminDoctors() {
   const docs = useApi<Doctor[]>('/api/admin/doctors');
   const specs = useApi<Spec[]>('/api/specialities');
   const clinics = useApi<Clinic[]>('/api/admin/clinics');
- 
+
   const [editing, setEditing] = useState<number | 'new' | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -22,20 +22,20 @@ export default function AdminDoctors() {
   const [linkDoctor, setLinkDoctor] = useState<number | null>(null);
   const [linkClinic, setLinkClinic] = useState('');
   const [linkDate, setLinkDate] = useState(todayLocal());
- 
+
   const run = async (fn: () => Promise<unknown>, ok: string) => {
     setBusy(true);
     try { await fn(); setMsg({ tone: 'ok', text: ok }); docs.reload(); return true; }
     catch (e) { setMsg({ tone: 'danger', text: e instanceof Error ? e.message : 'Failed' }); return false; }
     finally { setBusy(false); }
   };
- 
+
   function startEdit(d: Doctor | null) {
     setMsg(null);
     setEditing(d ? d.doctor_id : 'new');
     setForm(d ? { name: d.name, yearsExperience: String(d.years_experience), availabilityStatus: d.availability_status, specialityId: String(d.speciality_id) } : { ...EMPTY, specialityId: String(specs.data?.[0]?.speciality_id ?? '') });
   }
- 
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const body = { name: form.name, yearsExperience: Number(form.yearsExperience), availabilityStatus: form.availabilityStatus, specialityId: Number(form.specialityId) };
@@ -44,13 +44,13 @@ export default function AdminDoctors() {
       : await run(() => api(`/api/admin/doctors/${editing}`, { method: 'PUT', json: body }), 'Doctor updated.');
     if (ok) setEditing(null);
   }
- 
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between"><h1 className="text-3xl">Doctors</h1><Button onClick={() => startEdit(null)}>Add doctor</Button></div>
       {msg && <Alert tone={msg.tone}>{msg.text}</Alert>}
       {docs.error && <Alert>{docs.error}</Alert>}
- 
+
       {editing !== null && (
         <Card className="border-l-4 border-l-brand">
           <h2 className="mb-3 text-xl">{editing === 'new' ? 'New doctor' : 'Edit doctor'}</h2>
@@ -71,7 +71,7 @@ export default function AdminDoctors() {
           </form>
         </Card>
       )}
- 
+
       {docs.loading ? <Loading /> : docs.data && docs.data.length === 0 ? <EmptyState title="No doctors yet" /> : docs.data && (
         <Table>
           <thead><tr><th className={th}>Name</th><th className={th}>Speciality</th><th className={th}>Exp.</th><th className={th}>Status</th><th className={th}>Works at</th><th className={th}></th></tr></thead>

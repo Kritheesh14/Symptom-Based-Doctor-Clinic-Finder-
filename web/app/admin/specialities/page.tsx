@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { Alert, Button, Card, ConfirmDialog, EmptyState, Field, Input, Loading, Table, td, th } from '@/components/ui';
 import { api, useApi } from '@/lib/client';
- 
+
 type Spec = { speciality_id: number; speciality_name: string; doctors: number };
- 
+
 export default function AdminSpecialities() {
   const { data, error, loading, reload } = useApi<Spec[]>('/api/admin/specialities');
   const [editing, setEditing] = useState<number | 'new' | null>(null);
@@ -12,14 +12,14 @@ export default function AdminSpecialities() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ tone: 'ok' | 'danger'; text: string } | null>(null);
- 
+
   const run = async (fn: () => Promise<unknown>, ok: string) => {
     setBusy(true);
     try { await fn(); setMsg({ tone: 'ok', text: ok }); reload(); return true; }
     catch (e) { setMsg({ tone: 'danger', text: e instanceof Error ? e.message : 'Failed' }); return false; }
     finally { setBusy(false); }
   };
- 
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const ok = editing === 'new'
@@ -27,7 +27,7 @@ export default function AdminSpecialities() {
       : await run(() => api(`/api/admin/specialities/${editing}`, { method: 'PUT', json: { specialityName: name } }), 'Speciality renamed.');
     if (ok) setEditing(null);
   }
- 
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between"><h1 className="text-3xl">Specialities</h1><Button onClick={() => { setMsg(null); setName(''); setEditing('new'); }}>Add speciality</Button></div>

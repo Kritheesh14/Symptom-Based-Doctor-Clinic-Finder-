@@ -1,7 +1,7 @@
 -- =====================================================================
 -- views.sql  --  Four reporting views (advanced feature: views)
 -- =====================================================================
- 
+
 CREATE OR REPLACE VIEW v_doctor_directory AS
 SELECT d.doctor_id,
        d.name                AS doctor_name,
@@ -16,7 +16,7 @@ LEFT JOIN works_at w  ON w.doctor_id = d.doctor_id
 LEFT JOIN clinics c   ON c.clinic_id = w.clinic_id
 GROUP BY d.doctor_id, d.name, d.years_experience, d.availability_status,
          s.speciality_id, s.speciality_name;
- 
+
 CREATE OR REPLACE VIEW v_upcoming_appointments AS
 SELECT a.appointment_id,
        a.appointment_time,
@@ -34,7 +34,7 @@ JOIN doctors d       ON d.doctor_id  = a.doctor_id
 JOIN specialities s  ON s.speciality_id = d.speciality_id
 JOIN clinics c       ON c.clinic_id  = a.clinic_id
 WHERE a.status = 'scheduled' AND a.appointment_time >= now();
- 
+
 CREATE OR REPLACE VIEW v_patient_history AS
 SELECT a.appointment_id,
        a.patient_id,
@@ -55,7 +55,7 @@ JOIN doctors d       ON d.doctor_id  = a.doctor_id
 JOIN specialities s  ON s.speciality_id = d.speciality_id
 JOIN clinics c       ON c.clinic_id  = a.clinic_id
 LEFT JOIN prescriptions pr ON pr.appointment_id = a.appointment_id;
- 
+
 -- DROP / recreate demo.  CREATE OR REPLACE cannot change a view's column list, so
 -- a view whose shape changes is dropped and re-created, as done here.
 DROP VIEW IF EXISTS v_admin_stats;
@@ -69,9 +69,8 @@ SELECT (SELECT count(*) FROM patients)                                AS total_p
        (SELECT count(*) FROM appointments WHERE status = 'cancelled') AS cancelled,
        (SELECT count(*) FROM appointments WHERE status = 'no_show')   AS no_show,
        (SELECT count(*) FROM prescriptions)                           AS total_prescriptions;
- 
+
 COMMENT ON VIEW v_doctor_directory      IS 'Doctors with speciality and the clinics they work at (one row per doctor).';
 COMMENT ON VIEW v_upcoming_appointments IS 'Scheduled appointments in the future, with patient, doctor, speciality and clinic names.';
 COMMENT ON VIEW v_patient_history       IS 'Every appointment with doctor, clinic and optional prescription. Filter by patient_id.';
 COMMENT ON VIEW v_admin_stats           IS 'Single-row dashboard counters for the admin home page.';
- 

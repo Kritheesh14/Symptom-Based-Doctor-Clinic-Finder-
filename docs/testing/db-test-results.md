@@ -1,9 +1,9 @@
 # Database test results
- 
+
 Generated 2026-11-09T17:08:44Z by running db/tests/*.sql against the seeded database (PostgreSQL 16).
- 
+
 ## db/tests/test_views_fts.sql
- 
+
 ```
 PASS V1: new appointment 76 appears in v_upcoming_appointments
 PASS V2: new appointment appears in v_patient_history
@@ -18,9 +18,9 @@ PASS F4: prefix search 'cardio' returns the 2 cardiologists
 PASS F5: nonsense, empty and injection-like input return no rows safely
 INFO F6: FTS for "chest tightness when climbing stairs" returns 0 rows (no keyword overlap with any doctor/speciality/clinic)
 ```
- 
+
 ## db/tests/test_constraints_triggers.sql
- 
+
 ```
 PASS C1: invalid email -> 23514
 PASS C2: age 200 -> 23514
@@ -37,3 +37,4 @@ PASS T5: prescription needs a completed appointment
 PASS X1: complete_with_prescription is atomic and not repeatable
 PASS X2: one prescription per appointment
 ```
+

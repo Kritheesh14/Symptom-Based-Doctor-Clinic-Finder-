@@ -1,10 +1,10 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { SPECIALITY_NAMES } from '@/lib/constants';
- 
+
 type Row = { text: string; speciality_name: string };
 const load = (f: string): Row[] => JSON.parse(readFileSync(path.resolve(process.cwd(), '../vector', f), 'utf8'));
- 
+
 let failed = false;
 function check(file: string, minPerSpeciality: number) {
   const rows = load(file);
@@ -22,14 +22,14 @@ function check(file: string, minPerSpeciality: number) {
     if (n < minPerSpeciality) { console.error(`  -> ${name} has fewer than ${minPerSpeciality}`); failed = true; }
   }
 }
- 
+
 check('corpus.json', 15);
 check('eval.json', 3);
- 
+
 // the evaluation set must not contain exact corpus lines
 const corpus = new Set(load('corpus.json').map((r) => r.text.toLowerCase()));
 const leaked = load('eval.json').filter((r) => corpus.has(r.text.toLowerCase()));
 if (leaked.length) { console.error(`eval.json contains ${leaked.length} corpus lines`); failed = true; }
- 
+
 console.log(failed ? '\nFAILED' : '\nOK');
 process.exit(failed ? 1 : 0);

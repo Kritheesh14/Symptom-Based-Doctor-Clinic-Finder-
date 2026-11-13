@@ -1,7 +1,7 @@
 'use client';
 import { Alert, BarList, Card, Loading, Table, td, th } from '@/components/ui';
 import { useApi } from '@/lib/client';
- 
+
 type Stats = {
   counters: Record<string, number>;
   busiestDoctors: { doctor_id: number; name: string; speciality_name: string; completed: number }[];
@@ -9,17 +9,17 @@ type Stats = {
   demand: { specialityName: string; count: number }[];
   vector: { available: boolean; seedCases?: number; confirmedCases?: number };
 };
- 
+
 const TILES: [string, string][] = [
   ['total_patients', 'Patients'], ['total_doctors', 'Doctors'], ['total_clinics', 'Clinics'],
   ['scheduled', 'Scheduled'], ['completed', 'Completed'], ['no_show', 'No-shows'], ['total_prescriptions', 'Prescriptions'],
 ];
- 
+
 export default function AdminDashboard() {
   const { data, error, loading } = useApi<Stats>('/api/admin/stats');
   if (loading) return <Loading />;
   if (error || !data) return <Alert>{error ?? 'No data'}</Alert>;
- 
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl">Dashboard</h1>
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
           </div>
         ))}
       </dl>
- 
+
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <h2 className="mb-3 text-xl">Appointments per speciality, last 30 days</h2>
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
           ) : <Alert tone="warn">The vector database is not reachable. Start Qdrant to see this chart.</Alert>}
         </Card>
       </div>
- 
+
       <section>
         <h2 className="mb-2 text-xl">Busiest doctors (2+ completed visits)</h2>
         {data.busiestDoctors.length === 0 ? <p className="text-sm text-muted">No doctor has two completed visits yet.</p> : (

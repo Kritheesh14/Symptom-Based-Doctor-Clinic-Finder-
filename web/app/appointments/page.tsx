@@ -3,18 +3,18 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Alert, Button, ConfirmDialog, EmptyState, Loading, StatusBadge, Table, td, th } from '@/components/ui';
 import { api, formatDateTime, useApi } from '@/lib/client';
- 
+
 type Row = {
   appointment_id: number; appointment_time: string; status: string; doctor_name: string; speciality_name: string;
   clinic_name: string; clinic_address: string; medicine_details: string | null; prescription_notes: string | null;
 };
- 
+
 export default function AppointmentsPage() {
   const { data, error, loading, reload } = useApi<Row[]>('/api/appointments');
   const [cancelId, setCancelId] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
- 
+
   async function cancel() {
     if (cancelId === null) return;
     setBusy(true);
@@ -30,7 +30,7 @@ export default function AppointmentsPage() {
       setBusy(false);
     }
   }
- 
+
   return (
     <div className="space-y-5">
       <h1 className="text-3xl">My appointments</h1>

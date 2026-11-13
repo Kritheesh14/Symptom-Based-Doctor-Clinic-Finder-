@@ -1,9 +1,8 @@
-Create this exact path in the repository. Paste the complete content below. (16 lines; 794 characters.)
 import { hashPassword } from '@/lib/auth';
 import { queryOne } from '@/lib/db';
 import { api, readJson } from '@/lib/errors';
 import { registerSchema } from '@/lib/validation';
- 
+
 // Patients only. Admin accounts are created by the database seed / an existing admin, never self-service.
 export const POST = api(async (req: Request) => {
   const input = registerSchema.parse(await readJson(req));
@@ -15,4 +14,3 @@ export const POST = api(async (req: Request) => {
   );
   return Response.json({ patientId: row!.patient_id }, { status: 201 });
 });
- 

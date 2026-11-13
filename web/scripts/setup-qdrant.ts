@@ -1,7 +1,7 @@
 import { CASES, QUERIES, VECTOR_SIZE, qdrant } from '@/lib/vector/client';
- 
+
 type Index = { field: string; schema: 'integer' | 'keyword' | 'datetime' };
- 
+
 const COLLECTIONS: { name: string; indexes: Index[] }[] = [
   {
     name: CASES,
@@ -19,7 +19,7 @@ const COLLECTIONS: { name: string; indexes: Index[] }[] = [
     ],
   },
 ];
- 
+
 async function main() {
   const client = qdrant();
   for (const c of COLLECTIONS) {
@@ -36,5 +36,5 @@ async function main() {
     }
   }
 }
- 
+
 main().catch((e) => { console.error(e); process.exit(1); });

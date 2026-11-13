@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Alert, Button, Card, EmptyState, Field, StatusBadge, Textarea } from '@/components/ui';
 import { api } from '@/lib/client';
- 
+
 type Doctor = { doctor_id: number; doctor_name: string; years_experience: number; availability_status: string; clinics: string };
 type Result = {
   queryId: string;
@@ -16,14 +16,14 @@ type Result = {
   };
   doctors: Doctor[];
 };
- 
+
 export function SymptomCheck() {
   const params = useSearchParams();
   const [text, setText] = useState(params.get('text') ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
- 
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -36,7 +36,7 @@ export function SymptomCheck() {
       setBusy(false);
     }
   }
- 
+
   const rec = result?.recommendation;
   return (
     <div className="space-y-6">
@@ -50,7 +50,7 @@ export function SymptomCheck() {
           <Button type="submit" loading={busy} disabled={text.trim().length < 10}>Find my specialist</Button>
         </form>
       </Card>
- 
+
       {result && rec && (
         <>
           <Card className="border-l-4 border-l-brand">
@@ -74,7 +74,7 @@ export function SymptomCheck() {
             )}
             <p className="mt-4 text-xs text-muted">{result.disclaimer}</p>
           </Card>
- 
+
           <section>
             <h2 className="mb-3 text-2xl">Doctors you can book</h2>
             {result.doctors.length === 0 ? (
@@ -97,7 +97,7 @@ export function SymptomCheck() {
               </ul>
             )}
           </section>
- 
+
           {rec.similarCases.length > 0 && (
             <section>
               <h2 className="mb-2 text-xl">Descriptions that looked similar</h2>

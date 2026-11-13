@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { api } from '@/lib/client';
 import { Button } from './ui';
- 
+
 export function LogoutButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);

@@ -1,9 +1,9 @@
 'use client';
 import { Alert, Card, EmptyState, Loading } from '@/components/ui';
 import { formatDateTime, useApi } from '@/lib/client';
- 
+
 type Rx = { prescription_id: number; appointment_time: string; doctor_name: string; speciality_name: string; clinic_name: string; medicine_details: string; notes: string | null; issued_at: string };
- 
+
 export default function PrescriptionsPage() {
   const { data, error, loading } = useApi<Rx[]>('/api/prescriptions');
   return (
@@ -26,4 +26,3 @@ export default function PrescriptionsPage() {
     </div>
   );
 }
- 

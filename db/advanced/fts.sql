@@ -3,7 +3,7 @@
 -- =====================================================================
 CREATE INDEX IF NOT EXISTS idx_doctors_search ON doctors USING GIN (search_vector);
 CREATE INDEX IF NOT EXISTS idx_clinics_search ON clinics USING GIN (search_vector);
- 
+
 -- search_doctors('ravi cardio'):
 --   * the text is cut into words of 3+ letters/digits (short words like "my" or "a" would prefix-match almost
 --     everything); every word becomes a prefix term (cardio -> cardio:*)
@@ -30,14 +30,14 @@ DECLARE
 BEGIN
     SELECT array_agg(m[1]) INTO tokens
     FROM regexp_matches(lower(coalesce(p_query, '')), '[a-z0-9]{3,}', 'g') AS m;
- 
+
     IF tokens IS NULL THEN
         RETURN;                                   -- empty / punctuation-only / only tiny words: no rows
     END IF;
- 
+
     q := to_tsquery('simple',
                     array_to_string(ARRAY(SELECT t || ':*' FROM unnest(tokens) AS t), ' | '));
- 
+
     RETURN QUERY
     SELECT d.doctor_id,
            d.name::text,
@@ -64,7 +64,6 @@ BEGIN
              d.availability_status, s.speciality_id, s.speciality_name
     ORDER BY 8 DESC, d.name;
 END $$;
- 
+
 COMMENT ON FUNCTION search_doctors(text, int) IS
  'Ranked full-text search over doctor name, speciality name and clinic name/address (prefix match, GIN indexed).';
- 

@@ -1,15 +1,15 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { recommendSpeciality } from '@/lib/vector/recommend';
- 
+
 type Row = { text: string; speciality_name: string };
- 
+
 async function main() {
   const rows: Row[] = JSON.parse(readFileSync(path.resolve(process.cwd(), '../vector/eval.json'), 'utf8'));
   let top1 = 0, top3 = 0;
   const per = new Map<string, { n: number; hit1: number; hit3: number }>();
   const misses: string[] = [];
- 
+
   for (const r of rows) {
     const rec = await recommendSpeciality(r.text);
     const rank = rec.alternatives.findIndex((a) => a.specialityName === r.speciality_name);
@@ -22,7 +22,7 @@ async function main() {
     per.set(r.speciality_name, s);
     if (!ok1) misses.push(`- "${r.text}" -> expected **${r.speciality_name}**, got **${rec.specialityName}** (confidence ${(rec.confidence * 100).toFixed(0)}%)`);
   }
- 
+
   const pct = (a: number, b: number) => `${((100 * a) / b).toFixed(1)}%`;
   const lines = [
     '# Retrieval evaluation',
@@ -51,5 +51,5 @@ async function main() {
   writeFileSync(path.resolve(process.cwd(), '../docs/testing/retrieval-eval.md'), out);
   process.exit(top1 / rows.length >= 0.7 && top3 / rows.length >= 0.9 ? 0 : 2);
 }
- 
+
 main().catch((e) => { console.error(e); process.exit(1); });

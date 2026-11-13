@@ -2,7 +2,7 @@ import { recommendMinConfidence, recommendTopK } from '../config';
 import { AppError } from '../errors';
 import { CASES, qdrant } from './client';
 import { embed } from './embed';
- 
+
 export type SimilarCase = { text: string; specialityId: number; specialityName: string; score: number; source: string };
 export type Alternative = { specialityId: number; specialityName: string; score: number; share: number };
 export type Recommendation = {
@@ -14,7 +14,7 @@ export type Recommendation = {
   similarCases: SimilarCase[]; // top 3 nearest cases
   vector: number[];        // the query embedding (re-used for logging, never sent to the browser)
 };
- 
+
 /**
  * Retrieval algorithm:
  *  1. embed the patient's text
@@ -35,7 +35,7 @@ export async function recommendSpeciality(text: string, precomputedVector?: numb
   if (res.points.length === 0) {
     throw new AppError(503, 'The symptom index is empty. Run `npm run qdrant:setup && npm run qdrant:ingest`.');
   }
- 
+
   const totals = new Map<number, { name: string; score: number }>();
   const hits: SimilarCase[] = res.points.map((p) => {
     const payload = (p.payload ?? {}) as Record<string, unknown>;
@@ -47,12 +47,12 @@ export async function recommendSpeciality(text: string, precomputedVector?: numb
     totals.set(specialityId, cur);
     return { text: String(payload.text ?? ''), specialityId, specialityName, score: p.score, source: String(payload.source ?? 'seed') };
   });
- 
+
   const sum = [...totals.values()].reduce((a, b) => a + b.score, 0) || 1;
   const ranked: Alternative[] = [...totals.entries()]
     .map(([specialityId, v]) => ({ specialityId, specialityName: v.name, score: v.score, share: v.score / sum }))
     .sort((a, b) => b.score - a.score);
- 
+
   const winner = ranked[0];
   return {
     specialityId: winner.specialityId,
@@ -64,4 +64,3 @@ export async function recommendSpeciality(text: string, precomputedVector?: numb
     vector,
   };
 }
- 

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import { LogoutButton } from './LogoutButton';
- 
+
 const PATIENT_LINKS = [
   { href: '/symptom-check', label: 'Check symptoms' },
   { href: '/doctors', label: 'Find a doctor' },
@@ -15,7 +15,7 @@ const ADMIN_LINKS = [
   { href: '/admin/clinics', label: 'Clinics' },
   { href: '/admin/specialities', label: 'Specialities' },
 ];
- 
+
 export async function NavBar() {
   const session = await getSession();
   const links = session?.role === 'admin' ? ADMIN_LINKS : session ? PATIENT_LINKS : [];
