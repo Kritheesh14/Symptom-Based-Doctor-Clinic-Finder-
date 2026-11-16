@@ -1,6 +1,6 @@
 # API and security test results
 
-Run against `http://localhost:3100` on 2026-11-09T17:09:30.150Z by `scripts/api-tests.ts`.
+Run against `http://127.0.0.1:3100` on 2026-11-16T17:42:11.102Z by `scripts/api-tests.ts`.
 
 | ID | Test | Expected | Actual | Result |
 |---|---|---|---|---|
@@ -21,11 +21,11 @@ Run against `http://localhost:3100` on 2026-11-09T17:09:30.150Z by `scripts/api-
 | S9 | Unsigned (alg=none) JWT -> 401 | 401 | 401 | PASS |
 | S10 | Expired JWT -> 401 | 401 | 401 | PASS |
 | S11 | Injection string in search q (' OR 1=1 --) is searched as plain words, not executed | 200 and fewer than 20 rows | 200, 0 rows | PASS |
-| S11b | Time-based injection (pg_sleep) is not executed | 200, 0 rows, < 3 s | 200, 0 rows, 5 ms | PASS |
+| S11b | Time-based injection (pg_sleep) is not executed | 200, 0 rows, < 3 s | 200, 0 rows, 26 ms | PASS |
 | S12 | SQL injection in login email/password -> normal 401 | 401 | 401 | PASS |
 | S13 | Stacked-query injection attempt: doctors table intact | 200 and 20 doctors | 200, 20 doctors | PASS |
-| S14 | Injection text in symptom-check is plain data (patients intact) | no 5xx caused by SQL; patients intact | 503, 10 patients | PASS |
-| S15 | Every stored password is a 60-char bcrypt ($2.$10$) hash | all true | 12/12 bcrypt | PASS |
+| S14 | Injection text in symptom-check is plain data (patients intact) | no 5xx caused by SQL; patients intact | 200, 11 patients | PASS |
+| S15 | Every stored password is a 60-char bcrypt ($2.$10$) hash | all true | 13/13 bcrypt | PASS |
 | S16 | Anonymous GET /admin redirects to /login | 307 -> /login | 307 -> /login?next=%2Fadmin | PASS |
 | S17 | Patient GET /admin redirected away | 307 -> / | 307 -> / | PASS |
 | S18 | Security headers present (nosniff, frame deny) | both set | nosniff, DENY | PASS |
@@ -78,11 +78,10 @@ Run against `http://localhost:3100` on 2026-11-09T17:09:30.150Z by `scripts/api-
 | M18 | Admin deletes the test doctor | 200 | 200 | PASS |
 | M19 | Admin marks a scheduled appointment as no-show | 200 | 200 | PASS |
 | M20 | Marking the same appointment again -> 404 | 404 | 404 | PASS |
-| M21 | Admin appointment filter by status | only completed | 50 rows | PASS |
+| M21 | Admin appointment filter by status | only completed | 52 rows | PASS |
 | M22 | Invalid filter value -> 400 | 400 | 400 | PASS |
-| V0 | Qdrant offline: symptom-check degrades to 503 with a friendly message | 503 | 503 | PASS |
-| V1 | [vector] requires Qdrant + embedding model | - | not run here | SKIP |
-| V2 | [vector] requires Qdrant + embedding model | - | not run here | SKIP |
-| V3 | [vector] requires Qdrant + embedding model | - | not run here | SKIP |
+| V1 | [vector] symptom-check returns Cardiology for a chest-tightness description | Cardiology | Cardiology | PASS |
+| V2 | [vector] response contains doctors, disclaimer and no raw vector | doctors[] + disclaimer, no vector | 2 doctors, vector=false | PASS |
+| V3 | [vector] too-short text -> 400 | 400 | 400 | PASS |
 
-**77 passed, 0 failed, 3 skipped.**
+**79 passed, 0 failed, 0 skipped.**

@@ -3,7 +3,6 @@
 -- Run:  psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/tests/test_views_fts.sql
 -- Each check prints "PASS: ..." (NOTICE) or aborts with an exception.
 -- =====================================================================
-set ON_ERROR_STOP on
 BEGIN;
 
 DO $$
